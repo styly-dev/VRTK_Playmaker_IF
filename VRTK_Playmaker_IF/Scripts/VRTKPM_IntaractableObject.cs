@@ -22,9 +22,12 @@ namespace VRTKPM
         // イベントを送信する関数  
         void SendEvent(string eventText)
         {
-            foreach (PlayMakerFSM fsm in FSMs)
+            if( FSMs != null )
             {
-                fsm.Fsm.Event(eventText);
+                foreach (PlayMakerFSM fsm in FSMs)
+                {
+                    fsm.Fsm.Event(eventText);
+                }
             }
         }
 
