@@ -315,9 +315,6 @@ namespace VRTKPM
         private void TriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
         {
 
-            float angle = CalculateAngle(e);
-            var globalVariables = FsmVariables.GlobalVariables;
-            globalVariables.GetFsmFloat("VRTK_TouchPadAngle").Value = angle;
 
             SendEvent("VRTK_TriggerAxisChanged");
 
@@ -395,6 +392,10 @@ namespace VRTKPM
 
         private void TouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
         {
+            float angle = CalculateAngle(e);
+            var globalVariables = FsmVariables.GlobalVariables;
+            globalVariables.GetFsmFloat("VRTK_TouchPadAngle").Value = angle;
+
             SendEvent("VRTK_TouchpadAxisChanged");
         }
 
