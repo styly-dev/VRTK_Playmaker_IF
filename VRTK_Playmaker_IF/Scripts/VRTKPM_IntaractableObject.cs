@@ -56,9 +56,29 @@ namespace VRTKPM
 
         }
 
+        private bool nearHead = false;
         protected override void Update()
         {
             base.Update();
+
+            float distance = Vector3.Distance(Camera.main.transform.position, gameObject.transform.position);
+
+            if(distance<1.0f)
+            {
+                if (!nearHead)
+                {
+                    nearHead = true;
+                    SendEvent("VRTK_StartApproach");
+                }
+            }
+            else
+            {
+                if (nearHead)
+                {
+                    nearHead = false;
+                    SendEvent("VRTK_StopApproach");
+                }
+            }
         }
 
         public override void OnInteractableObjectTouched(InteractableObjectEventArgs e)
