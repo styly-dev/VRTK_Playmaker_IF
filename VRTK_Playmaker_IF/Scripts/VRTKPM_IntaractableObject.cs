@@ -31,17 +31,24 @@ namespace VRTKPM
             }
         }
 
+        GameObject preUsingObject;
         public override void StartUsing(GameObject currentUsingObject)
         {
+            Debug.LogError("StartUsing");
             base.StartUsing(usingObject);
-            SendEvent("VRTK_StartUsing");
 
-            // 変数のSet  
-            var globalVariables = FsmVariables.GlobalVariables;
-            globalVariables.GetFsmGameObject("currentUsingObject").Value = currentUsingObject;
-            
-            SetControllerEvents(currentUsingObject);
+            if( preUsingObject != currentUsingObject)
+            {
+                preUsingObject = currentUsingObject;
 
+                SendEvent("VRTK_StartUsing");
+
+                // 変数のSet  
+                var globalVariables = FsmVariables.GlobalVariables;
+                globalVariables.GetFsmGameObject("currentUsingObject").Value = currentUsingObject;
+
+                SetControllerEvents(currentUsingObject);
+            }
         }
 
         public override void StopUsing(GameObject previousUsingObject)
@@ -54,6 +61,7 @@ namespace VRTKPM
 
             RemoveControllerEvents(previousUsingObject);
 
+            preUsingObject = null;
         }
 
         private bool nearHead = false;
