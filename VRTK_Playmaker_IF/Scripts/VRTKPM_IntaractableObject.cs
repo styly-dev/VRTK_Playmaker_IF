@@ -26,19 +26,21 @@ namespace VRTKPM
             {
                 foreach (PlayMakerFSM fsm in FSMs)
                 {
+                    Debug.Log("Send To FSM:" + eventText);
                     fsm.Fsm.Event(eventText);
                 }
             }
         }
 
-        GameObject preUsingObject;
+        GameObject preUsingObject = null;
         public override void StartUsing(GameObject currentUsingObject)
         {
-            Debug.LogError("StartUsing");
+            Debug.Log("StartUsing");
             base.StartUsing(usingObject);
 
             if( preUsingObject != currentUsingObject)
             {
+                Debug.Log("Send VRTK_StartUsing Event: currentUsingObject:" + currentUsingObject.name);
                 preUsingObject = currentUsingObject;
 
                 SendEvent("VRTK_StartUsing");
@@ -117,13 +119,13 @@ namespace VRTKPM
         public override void OnInteractableObjectUsed(InteractableObjectEventArgs e)
         {
             base.OnInteractableObjectUsed(e);
-            SendEvent("VRTK_OnInteractableObjectUsed");
+//            SendEvent("VRTK_OnInteractableObjectUsed");
         }
 
         public override void OnInteractableObjectUnused(InteractableObjectEventArgs e)
         {
             base.OnInteractableObjectUnused(e);
-            SendEvent("VRTK_OnInteractableObjectUnused");
+//            SendEvent("VRTK_OnInteractableObjectUnused");
         }
 
         /// <summary>
