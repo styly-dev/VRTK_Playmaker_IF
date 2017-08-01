@@ -22,25 +22,27 @@ namespace VRTKPM
         // イベントを送信する関数  
         void SendEvent(string eventText)
         {
-            if( FSMs != null )
+            FSMs = GetComponents<PlayMakerFSM>();
+            if ( FSMs != null )
             {
                 foreach (PlayMakerFSM fsm in FSMs)
                 {
                     Debug.Log("Send To FSM:" + eventText);
                     fsm.Fsm.Event(eventText);
                 }
+            }else
+            {
+                Debug.LogError("FSMs is NULL!!!");
             }
         }
 
         GameObject preUsingObject = null;
         public override void StartUsing(GameObject currentUsingObject)
         {
-            Debug.Log("StartUsing");
             base.StartUsing(usingObject);
 
             if( preUsingObject != currentUsingObject)
             {
-                Debug.Log("Send VRTK_StartUsing Event: currentUsingObject:" + currentUsingObject.name);
                 preUsingObject = currentUsingObject;
 
                 SendEvent("VRTK_StartUsing");
