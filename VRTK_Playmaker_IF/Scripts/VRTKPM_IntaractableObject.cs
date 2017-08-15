@@ -36,6 +36,18 @@ namespace VRTKPM
             }
         }
 
+        void SetFsmBoolValiable(string name, bool val)
+        {
+            FSMs = GetComponents<PlayMakerFSM>();
+            if (FSMs != null)
+            {
+                foreach (PlayMakerFSM fsm in FSMs)
+                {
+                    fsm.FsmVariables.GetFsmBool(name).Value = val;
+                }
+            }
+        }
+
         GameObject preUsingObject = null;
         public override void StartUsing(GameObject currentUsingObject)
         {
@@ -43,6 +55,8 @@ namespace VRTKPM
 
             if ( preUsingObject != currentUsingObject)
             {
+                var globalVariables = FsmVariables.GlobalVariables;
+
                 preUsingObject = currentUsingObject;
 
                 SendEvent("VRTK_StartUsing");
@@ -51,15 +65,15 @@ namespace VRTKPM
 
                 if( currentUsingObject.name == "RightController")
                 {
+                    SetFsmBoolValiable("UsingByRightController",true);
                     SendEvent("VRTK_StartUsing_R");
                 }
                 else if (currentUsingObject.name == "LeftController")
                 {
+                    SetFsmBoolValiable("UsingByLeftController", true);
                     SendEvent("VRTK_StartUsing_L");
                 }
 
-                // 変数のSet  
-                var globalVariables = FsmVariables.GlobalVariables;
                 globalVariables.GetFsmGameObject("currentUsingObject").Value = currentUsingObject;
 
                 SetControllerEvents(currentUsingObject);
@@ -71,17 +85,19 @@ namespace VRTKPM
             base.StopUsing(previousUsingObject);
             SendEvent("VRTK_StopUsing");
 
+            var globalVariables = FsmVariables.GlobalVariables;
+
             if (previousUsingObject.name == "RightController")
             {
+                SetFsmBoolValiable("UsingByRightController", false);
                 SendEvent("VRTK_StopUsing_R");
             }
             else if (previousUsingObject.name == "LeftController")
             {
+                SetFsmBoolValiable("UsingByLeftController", false);
                 SendEvent("VRTK_StopUsing_L");
             }
 
-            // 変数のSet  
-            var globalVariables = FsmVariables.GlobalVariables;
             globalVariables.GetFsmGameObject("currentUsingObject").Value = null;
 
             RemoveControllerEvents(previousUsingObject);
