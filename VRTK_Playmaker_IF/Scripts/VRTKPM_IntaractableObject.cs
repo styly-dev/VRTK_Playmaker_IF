@@ -27,25 +27,36 @@ namespace VRTKPM
             {
                 foreach (PlayMakerFSM fsm in FSMs)
                 {
-                    Debug.Log("Send To FSM:" + eventText);
+//                    Debug.Log("Send To FSM:" + eventText);
                     fsm.Fsm.Event(eventText);
                 }
             }else
             {
-                Debug.LogError("FSMs is NULL!!!");
+//                Debug.LogError("FSMs is NULL!!!");
             }
         }
 
         GameObject preUsingObject = null;
         public override void StartUsing(GameObject currentUsingObject)
         {
-            base.StartUsing(usingObject);
+            base.StartUsing(currentUsingObject);
 
-            if( preUsingObject != currentUsingObject)
+            if ( preUsingObject != currentUsingObject)
             {
                 preUsingObject = currentUsingObject;
 
                 SendEvent("VRTK_StartUsing");
+
+                Debug.Log("currentUsingObject.name:" + currentUsingObject.name);
+
+                if( currentUsingObject.name == "RightController")
+                {
+                    SendEvent("VRTK_StartUsing_R");
+                }
+                else if (currentUsingObject.name == "LeftController")
+                {
+                    SendEvent("VRTK_StartUsing_L");
+                }
 
                 // 変数のSet  
                 var globalVariables = FsmVariables.GlobalVariables;
@@ -57,8 +68,18 @@ namespace VRTKPM
 
         public override void StopUsing(GameObject previousUsingObject)
         {
-            base.StopUsing(usingObject);
+            base.StopUsing(previousUsingObject);
             SendEvent("VRTK_StopUsing");
+
+            if (previousUsingObject.name == "RightController")
+            {
+                SendEvent("VRTK_StopUsing_R");
+            }
+            else if (previousUsingObject.name == "LeftController")
+            {
+                SendEvent("VRTK_StopUsing_L");
+            }
+
             // 変数のSet  
             var globalVariables = FsmVariables.GlobalVariables;
             globalVariables.GetFsmGameObject("currentUsingObject").Value = null;
